@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(120deg, #bbdefb, #42a5f5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  animation: fadeIn 1.2s ease-in-out;
+}
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+.box {
+  background: white;
+  width: 90%;
+  max-width: 380px;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: zoomIn 0.6s ease-out;
+}
+@keyframes zoomIn { from{transform:scale(0.5);} to{transform:scale(1);} }
+
+h2 { color:#0d47a1; }
+p { font-size:15px; color:#333; margin:6px 0; }
+
+.badge {
+  display: inline-block;
+  background: #e3f2fd;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color:#0d47a1;
+  margin-top: 10px;
+  animation: float 1.6s infinite alternate ease-in-out;
+}
+@keyframes float { from{transform:translateY(0);} to{transform:translateY(-6px);} }
+
+button {
+  margin-top:15px;
+  padding:10px 18px;
+  background:#1976d2;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover { background:#0d47a1; transform:scale(1.05); }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Welcome 🎉</h2>
+  <p id="info"></p>
+  <div class="badge">You are now successfully registered!</div>
+  <button onclick="window.location.href='index.html'">Go Back to Form</button>
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("lastUser"));
+
+if (user) {
+  document.getElementById("info").innerHTML = `
+    <strong>Name:</strong> ${user.Name}<br>
+    <strong>Mother:</strong> ${user.MotherName}<br>
+    <strong>Father:</strong> ${user.FatherName}<br>
+    <strong>Address:</strong> ${user.Address}<br>
+    <strong>Mobile:</strong> ${user.Mobile}<br>
+    <strong>Email:</strong> ${user.Email}<br>
+    <strong>Submitted On:</strong> ${user.Time}
+  `;
+} else {
+  document.getElementById("info").textContent = "No user data found.";
+}
+</script>
+
+</body>
+</html>

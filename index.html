@@ -7,60 +7,80 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #e3f2fd, #90caf9);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
   margin: 0;
-  padding: 15px;
-  animation: fadeIn 1s ease-in-out;
+  overflow: hidden;
+  animation: fadeIn 1s ease-in;
 }
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
 .card {
-  background: white;
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  animation: slideUp 0.8s ease-out;
+  background: rgba(255,255,255,0.95);
+  width: 90%;
+  max-width: 420px;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  animation: slideDown 0.8s ease-out;
 }
-@keyframes slideUp { from{transform:translateY(40px);opacity:0;} to{transform:translateY(0);opacity:1;} }
-h2 { text-align:center; color:#0d47a1; font-weight:600; }
+@keyframes slideDown {
+  from {transform: translateY(-50px); opacity:0;}
+  to {transform: translateY(0); opacity:1;}
+}
+
+h2 { text-align:center; color:#0f2027; font-weight:600; margin-bottom:15px; }
+
 input, textarea {
-  width:100%; padding:12px; margin:8px 0;
-  border:2px solid #64b5f6; border-radius:8px;
-  outline:none; transition:0.3s;
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:2px solid #2c5364;
+  border-radius:8px;
   font-size:15px;
+  outline:none;
+  transition:0.3s;
+  background: white;
 }
 input:focus, textarea:focus {
-  border-color:#0d47a1;
-  box-shadow:0 0 10px rgba(13,71,161,0.3);
-  transform:scale(1.02);
+  border-color:#0f2027;
+  transform: scale(1.02);
+  box-shadow:0 0 12px rgba(44,83,100,0.5);
 }
-textarea { height:70px; resize:none; }
+
+textarea { resize:none; height:70px; }
 
 button {
-  width:100%; padding:12px; background:#1976d2;
-  border:none; color:white; border-radius:8px;
-  font-size:16px; cursor:not-allowed; opacity:0.6;
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  border:none;
+  background:#203a43;
+  color:white;
+  font-size:16px;
+  border-radius:8px;
+  opacity:0.6;
+  cursor:not-allowed;
   transition:0.3s;
 }
 button.active {
-  opacity:1; cursor:pointer;
-  animation: glow 1.2s infinite alternate;
+  opacity:1;
+  cursor:pointer;
+  animation: pulse 1s infinite alternate;
 }
-@keyframes glow { from{box-shadow:0 0 6px rgba(25,118,210,0.4);} to{box-shadow:0 0 14px rgba(25,118,210,0.9);} }
-button:hover.active { background:#0d47a1; transform:translateY(-2px); }
+@keyframes pulse {
+  from {box-shadow:0 0 8px rgba(32,58,67,0.4);}
+  to {box-shadow:0 0 18px rgba(32,58,67,1);}
+}
+button:hover.active { background:#0f2027; transform:scale(1.04); }
 
-.admin-link {
-  display:block; text-align:center; margin-top:12px;
-  font-weight:600; color:#0d47a1; text-decoration:none;
-}
-.admin-link:hover { text-decoration:underline; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -68,69 +88,67 @@ button:hover.active { background:#0d47a1; transform:translateY(-2px); }
 <body>
 
 <div class="card">
-  <h2>User Information Form</h2>
+  <h2>Register Now</h2>
 
-  <input type="text" id="name" placeholder="Enter Name">
+  <input type="text" id="name" placeholder="Name">
   <input type="text" id="mother" placeholder="Mother's Name">
   <input type="text" id="father" placeholder="Father's Name">
-  <textarea id="address" placeholder="Enter Address"></textarea>
+  <textarea id="address" placeholder="Address"></textarea>
   <input type="text" id="mobile" placeholder="Mobile Number">
   <input type="email" id="email" placeholder="Email ID">
 
   <button id="submitBtn" disabled>Submit</button>
-  <a href="admin-login.html" class="admin-link">Admin Login</a>
 </div>
 
 <script>
+// Enable submit when all fields are filled
 const inputs = document.querySelectorAll("#name, #mother, #father, #address, #mobile, #email");
-const submitBtn = document.getElementById("submitBtn");
+const btn = document.getElementById("submitBtn");
 
-inputs.forEach(inp => inp.addEventListener("input", validateForm));
-
-function validateForm() {
-  const allFilled = [...inputs].every(inp => inp.value.trim() !== "");
-  if (allFilled) {
-    submitBtn.disabled = false;
-    submitBtn.classList.add("active");
+inputs.forEach(i => i.addEventListener("input", () => {
+  const filled = [...inputs].every(i => i.value.trim() !== "");
+  if (filled) {
+    btn.disabled = false;
+    btn.classList.add("active");
   } else {
-    submitBtn.disabled = true;
-    submitBtn.classList.remove("active");
+    btn.disabled = true;
+    btn.classList.remove("active");
   }
-}
+}));
 
-submitBtn.addEventListener("click", () => {
-  const entry = {
+// Submit action
+btn.addEventListener("click", () => {
+  const userData = {
     Name: document.getElementById("name").value,
-    MotherName: document.getElementById("mother").value,
-    FatherName: document.getElementById("father").value,
+    Mother: document.getElementById("mother").value,
+    Father: document.getElementById("father").value,
     Address: document.getElementById("address").value,
     Mobile: document.getElementById("mobile").value,
     Email: document.getElementById("email").value,
-    Time: new Date().toLocaleString("en-IN", { timeZone: "+05:30" })
+    Time: new Date().toLocaleString("en-IN", {timeZone:"+05:30"})
   };
 
-  let data = JSON.parse(localStorage.getItem("formEntries")) || [];
-  data.push(entry);
-  localStorage.setItem("formEntries", JSON.stringify(data));
+  // Save user data for welcome page
+  localStorage.setItem("lastUser", JSON.stringify(userData));
 
-  // Confetti celebration
-  confetti({ particleCount: 160, spread: 80, origin: { y: 0.6 } });
+  // Confetti effect
+  confetti({ particleCount: 170, spread: 85, origin: { y: 0.6 } });
 
-  // Reset form fields
-  inputs.forEach(inp => inp.value = "");
-  submitBtn.disabled = true;
-  submitBtn.classList.remove("active");
+  // Reset form
+  inputs.forEach(i => i.value = "");
+  btn.disabled = true;
+  btn.classList.remove("active");
 
-  // Redirect to admin panel after animation
+  // Redirect to welcome.html
   setTimeout(() => {
-    window.location.href = "admin-panel.html";
-  }, 1800);
+    window.location.href = "welcome.html";
+  }, 1500);
 });
 
-// Heartbeat to mark device active
+// Heartbeat active user tracking
 setInterval(() => {
   const uid = localStorage.getItem("sessionUID") || Date.now();
-  localStorage.setItem("activeUser_" + uid, "true");
+  localStorage.setItem("activeUser_" + uid, "1");
   localStorage.setItem("sessionUID", uid);
   setTimeout(() => localStorage.removeItem("activeUser_" + uid), 10000);
 }, 4000);
