@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Form</title>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 body {
@@ -17,7 +18,7 @@ body {
   padding: 15px;
   animation: fadeIn 1s ease-in-out;
 }
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 .card {
   background: white;
   width: 100%;
@@ -27,47 +28,105 @@ body {
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   animation: slideUp 0.8s ease-out;
 }
-@keyframes slideUp { from {transform:translateY(40px);opacity:0;} to {transform:translateY(0);opacity:1;} }
+@keyframes slideUp { from{transform:translateY(40px);opacity:0;} to{transform:translateY(0);opacity:1;} }
 h2 { text-align:center; color:#0d47a1; font-weight:600; }
 input, textarea {
   width:100%; padding:12px; margin:8px 0;
   border:2px solid #64b5f6; border-radius:8px;
   outline:none; transition:0.3s;
+  font-size:15px;
 }
 input:focus, textarea:focus {
-  border-color:#0d47a1; box-shadow:0 0 10px rgba(13,71,161,0.3); transform:scale(1.02);
+  border-color:#0d47a1;
+  box-shadow:0 0 10px rgba(13,71,161,0.3);
+  transform:scale(1.02);
 }
 textarea { height:70px; resize:none; }
+
 button {
   width:100%; padding:12px; background:#1976d2;
   border:none; color:white; border-radius:8px;
-  font-size:16px; cursor:not-allowed; opacity:0.6; transition:0.3s;
+  font-size:16px; cursor:not-allowed; opacity:0.6;
+  transition:0.3s;
 }
-button.active { opacity:1; cursor:pointer; animation:glow 1.2s infinite alternate; }
-@keyframes glow { from {box-shadow:0 0 6px rgba(25,118,210,0.4);} to {box-shadow:0 0 14px rgba(25,118,210,0.9);} }
+button.active {
+  opacity:1; cursor:pointer;
+  animation: glow 1.2s infinite alternate;
+}
+@keyframes glow { from{box-shadow:0 0 6px rgba(25,118,210,0.4);} to{box-shadow:0 0 14px rgba(25,118,210,0.9);} }
 button:hover.active { background:#0d47a1; transform:translateY(-2px); }
+
 .admin-link {
   display:block; text-align:center; margin-top:12px;
   font-weight:600; color:#0d47a1; text-decoration:none;
 }
 .admin-link:hover { text-decoration:underline; }
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+
 <div class="card">
   <h2>User Information Form</h2>
-  <input type="text" placeholder="Enter Name">
-  <input type="text" placeholder="Mother's Name">
-  <input type="text" placeholder="Father's Name">
-  <textarea placeholder="Enter Address"></textarea>
-  <input type="text" placeholder="Mobile Number">
-  <input type="email" placeholder="Email ID">
-  <button disabled>Submit</button>
+
+  <input type="text" id="name" placeholder="Enter Name">
+  <input type="text" id="mother" placeholder="Mother's Name">
+  <input type="text" id="father" placeholder="Father's Name">
+  <textarea id="address" placeholder="Enter Address"></textarea>
+  <input type="text" id="mobile" placeholder="Mobile Number">
+  <input type="email" id="email" placeholder="Email ID">
+
+  <button id="submitBtn" disabled>Submit</button>
   <a href="admin-login.html" class="admin-link">Admin Login</a>
 </div>
 
 <script>
+const inputs = document.querySelectorAll("#name, #mother, #father, #address, #mobile, #email");
+const submitBtn = document.getElementById("submitBtn");
+
+inputs.forEach(inp => inp.addEventListener("input", validateForm));
+
+function validateForm() {
+  const allFilled = [...inputs].every(inp => inp.value.trim() !== "");
+  if (allFilled) {
+    submitBtn.disabled = false;
+    submitBtn.classList.add("active");
+  } else {
+    submitBtn.disabled = true;
+    submitBtn.classList.remove("active");
+  }
+}
+
+submitBtn.addEventListener("click", () => {
+  const entry = {
+    Name: document.getElementById("name").value,
+    MotherName: document.getElementById("mother").value,
+    FatherName: document.getElementById("father").value,
+    Address: document.getElementById("address").value,
+    Mobile: document.getElementById("mobile").value,
+    Email: document.getElementById("email").value,
+    Time: new Date().toLocaleString("en-IN", { timeZone: "+05:30" })
+  };
+
+  let data = JSON.parse(localStorage.getItem("formEntries")) || [];
+  data.push(entry);
+  localStorage.setItem("formEntries", JSON.stringify(data));
+
+  // Confetti celebration
+  confetti({ particleCount: 160, spread: 80, origin: { y: 0.6 } });
+
+  // Reset form fields
+  inputs.forEach(inp => inp.value = "");
+  submitBtn.disabled = true;
+  submitBtn.classList.remove("active");
+
+  // Redirect to admin panel after animation
+  setTimeout(() => {
+    window.location.href = "admin-panel.html";
+  }, 1800);
+});
+
 // Heartbeat to mark device active
 setInterval(() => {
   const uid = localStorage.getItem("sessionUID") || Date.now();
@@ -76,5 +135,6 @@ setInterval(() => {
   setTimeout(() => localStorage.removeItem("activeUser_" + uid), 10000);
 }, 4000);
 </script>
+
 </body>
 </html>
