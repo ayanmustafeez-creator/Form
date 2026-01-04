@@ -1,0 +1,80 @@
+<!<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<style>
+body{font-family:'Poppins',sans-serif;background:#f0f6ff;padding:15px;margin:0;}
+h2{text-align:center;color:#0d47a1;}
+#newAlert{background:#ffeb3b;padding:12px;text-align:center;font-weight:600;border-radius:6px;margin-bottom:12px;animation:blink 1s infinite alternate;}
+@keyframes blink{from{opacity:0.5;}to{opacity:1;}}
+.search-box{width:100%;max-width:400px;margin:auto;display:block;padding:12px;border:2px solid #1976d2;border-radius:8px;outline:none;font-size:15px;margin-bottom:14px;}
+.table-container{width:100%;overflow-x:auto;background:white;padding:10px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.12);}
+table{width:100%;border-collapse:collapse;min-width:750px;}
+th,td{padding:10px;border:1px solid #ddd;font-size:14px;text-align:center;}
+th{background:#0d47a1;color:white;}
+.delete-btn{padding:6px 10px;background:#e53935;border:none;color:white;border-radius:6px;cursor:pointer;}
+.logout-btn{width:100%;padding:10px;background:#1976d2;border:none;color:white;border-radius:6px;margin-top:14px;font-size:16px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="newAlert" style="display:none;">New Form Submission Received!</div>
+
+<div style="text-align:center;font-size:18px;font-weight:600;color:#0d47a1;margin-bottom:12px;">
+  Active Users on Site: <span id="activeCount">0</span>
+</div>
+
+<input type="text" id="searchInput" class="search-box" placeholder="Search submissions...">
+
+<div class="table-container">
+<table>
+<thead><tr><th>#</th><th>Name</th><th>Mother</th><th>Father</th><th>Address</th><th>Mobile</th><th>Email</th><th>Time</th><th>Action</th></tr></thead>
+<tbody id="dataTable"></tbody>
+</table>
+</div>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<script>
+if(localStorage.getItem("adminAuth")!=="true"){alert("Unauthorized");window.location.href="admin-login.html";}
+
+function countActiveUsers(){
+  let c=0; for(let k in localStorage) if(k.startsWith("activeUser_")) c++; return c;
+}
+function showActiveAdminCount(){ document.getElementById("activeCount").textContent=countActiveUsers(); }
+setInterval(showActiveAdminCount,2000);
+
+let oldCount=Number(localStorage.getItem("lastEntryCount")||0);
+let newCount=JSON.parse(localStorage.getItem("formEntries")||"[]").length;
+if(newCount>oldCount){ document.getElementById("newAlert").style.display="block"; alert("A new user has submitted the form!"); }
+
+function loadTable(){
+  const data=JSON.parse(localStorage.getItem("formEntries"))||[];
+  const table=document.getElementById("dataTable"); table.innerHTML="";
+  data.forEach((item,i)=>{ table.innerHTML+=`<tr class="tableRow"><td>${i+1}</td><td>${item.Name}</td><td>${item.MotherName}</td><td>${item.FatherName}</td><td>${item.Address}</td><td>${item.Mobile}</td><td>${item.Email}</td><td>${item.Time}</td><td><button class="delete-btn" onclick="deleteEntry(${i})">Delete</button></td></tr>`; });
+  localStorage.setItem("lastEntryCount",data.length);
+}
+
+function deleteEntry(i){
+  let data=JSON.parse(localStorage.getItem("formEntries"))||[];
+  data.splice(i,1);
+  localStorage.setItem("formEntries",JSON.stringify(data));
+  loadTable();
+  applySearch();
+}
+
+function applySearch(){
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  document.querySelectorAll(".tableRow").forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?"":"none");
+}
+document.getElementById("searchInput").addEventListener("input",applySearch);
+
+function logout(){ localStorage.removeItem("adminAuth");window.location.href="admin-login.html"; }
+
+loadTable();
+showActiveAdminCount();
+</script>
+</body>
+</html>

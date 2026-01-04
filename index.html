@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Form</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #e3f2fd, #90caf9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px;
+  animation: fadeIn 1s ease-in-out;
+}
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+.card {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  animation: slideUp 0.8s ease-out;
+}
+@keyframes slideUp { from {transform:translateY(40px);opacity:0;} to {transform:translateY(0);opacity:1;} }
+h2 { text-align:center; color:#0d47a1; font-weight:600; }
+input, textarea {
+  width:100%; padding:12px; margin:8px 0;
+  border:2px solid #64b5f6; border-radius:8px;
+  outline:none; transition:0.3s;
+}
+input:focus, textarea:focus {
+  border-color:#0d47a1; box-shadow:0 0 10px rgba(13,71,161,0.3); transform:scale(1.02);
+}
+textarea { height:70px; resize:none; }
+button {
+  width:100%; padding:12px; background:#1976d2;
+  border:none; color:white; border-radius:8px;
+  font-size:16px; cursor:not-allowed; opacity:0.6; transition:0.3s;
+}
+button.active { opacity:1; cursor:pointer; animation:glow 1.2s infinite alternate; }
+@keyframes glow { from {box-shadow:0 0 6px rgba(25,118,210,0.4);} to {box-shadow:0 0 14px rgba(25,118,210,0.9);} }
+button:hover.active { background:#0d47a1; transform:translateY(-2px); }
+.admin-link {
+  display:block; text-align:center; margin-top:12px;
+  font-weight:600; color:#0d47a1; text-decoration:none;
+}
+.admin-link:hover { text-decoration:underline; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+<div class="card">
+  <h2>User Information Form</h2>
+  <input type="text" placeholder="Enter Name">
+  <input type="text" placeholder="Mother's Name">
+  <input type="text" placeholder="Father's Name">
+  <textarea placeholder="Enter Address"></textarea>
+  <input type="text" placeholder="Mobile Number">
+  <input type="email" placeholder="Email ID">
+  <button disabled>Submit</button>
+  <a href="admin-login.html" class="admin-link">Admin Login</a>
+</div>
+
+<script>
+// Heartbeat to mark device active
+setInterval(() => {
+  const uid = localStorage.getItem("sessionUID") || Date.now();
+  localStorage.setItem("activeUser_" + uid, "true");
+  localStorage.setItem("sessionUID", uid);
+  setTimeout(() => localStorage.removeItem("activeUser_" + uid), 10000);
+}, 4000);
+</script>
+</body>
+</html>
